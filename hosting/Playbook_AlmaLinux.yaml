@@ -1,6 +1,6 @@
 ---
 - name: Install OpenNebula on AlmaLinux
-  hosts: opennebulaserver
+  hosts: localhost.localdomain
   become: true
   tasks:
     - name: Add OpenNebula repository
