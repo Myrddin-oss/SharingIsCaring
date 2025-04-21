@@ -11,11 +11,6 @@
         gpgcheck: yes
         gpgkey: https://downloads.opennebula.io/repo/repo2.key
         enabled: yes
-    - name: Import OpenNebula GPG key
-      rpm_key:
-        state: present
-        key: "https://downloads.opennebula.io/repo/repo2.key"
-      become: true
     - name: Install OpenNebula packages
       dnf:
         name:
