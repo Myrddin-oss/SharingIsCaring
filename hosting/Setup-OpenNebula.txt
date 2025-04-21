@@ -1,0 +1,28 @@
+
+
+# Sunstone configuration : vi /etc/one/sunstone-server.conf
+# Fireedge configuration : vi /etc/one/fireedge-server.conf
+
+# Check les services
+systemctl status opennebula-sunstone
+systemctl status opennebula-fireedge
+
+# Restart les services
+systemctl restart opennebula-sunstone
+systemctl restart opennebula-fireedge
+
+# Check la réponse des service : 
+ss -tulpn | grep -E '2633|9869|2616|5030|2474'
+# OpenNebulaCore (Oned) => curl -I http://localhost:2633
+# Sunstone => curl -I http://localhost:9869
+# FireEdge => curl -I http://localhost:2616
+# OneGate => curl -I http://localhost:5030
+# OneFlox => curl -I http://localhost:2474
+
+# Si ca marche en local alors il faut check le Firewall
+firewall-cmd --list-ports
+# ==> devrait retourner la liste des 3 ports ouverts
+# sinon il faut les ouvrir : 
+firewall-cmd --permanent --add-port=2616/tcp
+firewall-cmd --reload
+
