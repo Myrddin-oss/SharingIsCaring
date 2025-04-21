@@ -11,17 +11,22 @@
         gpgcheck: yes
         gpgkey: https://downloads.opennebula.io/repo/repo.key
         enabled: yes
-
+    - name: Import OpenNebula GPG key
+      rpm_key:
+        state: present
+        key: "https://downloads.opennebula.io/repo/repo.key"
+      become: true
     - name: Install OpenNebula packages
       dnf:
         name:
           - opennebula
-          - opennebula-server
           - opennebula-sunstone
-          - opennebula-rubygems
+          - opennebula-fireedge
           - opennebula-gate
           - opennebula-flow
+          - opennebula-provision
         state: present
+        enablerepo: crb
 
     - name: Start and enable OpenNebula services
       systemd:
