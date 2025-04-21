@@ -1,0 +1,49 @@
+---
+- name: Install OpenNebula on AlmaLinux
+  hosts: opennebulaserver
+  become: true
+  tasks:
+    - name: Add OpenNebula repository
+      yum_repository:
+        name: opennebula
+        description: OpenNebula Repository
+        baseurl: https://downloads.opennebula.io/repo/6.10/AlmaLinux/9/$basearch
+        gpgcheck: yes
+        gpgkey: https://downloads.opennebula.io/repo/repo.key
+        enabled: yes
+
+    - name: Install OpenNebula packages
+      dnf:
+        name:
+          - opennebula
+          - opennebula-server
+          - opennebula-sunstone
+          - opennebula-ruby
+          - opennebula-gate
+          - opennebula-flow
+        state: present
+
+    - name: Start and enable OpenNebula services
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - opennebula
+        - opennebula-sunstone
+
+    - name: Configure firewall
+      firewalld:
+        port: "{{ item }}"
+        permanent: yes
+        state: enabled
+      loop:
+        - 2633/tcp   # OpenNebula XML-RPC
+        - 9869/tcp   # Sunstone
+      notify: Reload firewall
+
+  handlers:
+    - name: Reload firewall
+      systemd:
+        name: firewalld
+        state: reloaded
